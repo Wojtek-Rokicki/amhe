@@ -1,9 +1,19 @@
+"""File with GA functions
+"""
+
 import numpy as np
 from . import config as config
 
-def generate_population():  # generates initial population for GA
+def init_population():
+    '''Generates initial population for GA using Xavier initialization
+    
+    Returns
+    -------
+    ndarray
+        a population array with dimensions of (population, weights)
+    '''
     hidden_neurons = config.hidden_neurons
-    input_size = config.input_size
+    input_size = config.INPUT_SIZE
     population_size = config.population_size
 
     # need 10 initial chromosomes
@@ -13,17 +23,18 @@ def generate_population():  # generates initial population for GA
         # initialize the weights (with biases) using Xavier initialization
 
         weights = []
-        for i in range(len(hidden_neurons)):
+        for i in range(len(hidden_neurons)): # for each layer
             w_length = 0
             if i ==0:
                 w_length = hidden_neurons[0]*input_size+hidden_neurons[0]
             else:
                 w_length = hidden_neurons[i]*hidden_neurons[i-1]+hidden_neurons[i]
-            w = np.random.randn(w_length) / np.sqrt(w_length)
+            w = np.random.randn(w_length) / np.sqrt(w_length) # weights for current layer
             w.shape = (1, w_length)
-            weights.append(w)
+            weights.append(w) # list of ndarrays
 
-        #ten ostatni, wyjściowy poza pętlą!
+        # one NN output
+        # last layer
         w_out_length = hidden_neurons[-1]
         w_out = np.random.randn(w_out_length) / np.sqrt(w_out_length)
         w_out.shape = (1, w_out_length)

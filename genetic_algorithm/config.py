@@ -1,11 +1,14 @@
-# HYPERPARAMETERS
-GENERATIONS = 2  # max number of generations
-population_size = 100  # number of chromosomes in each population
+"""Config file with parameters for GA and NN
+"""
 
+# Genetic Algorithm parameters
+GENERATIONS = 1000 # const
+population_size = 100 
+crossed_parents = 100 # number of chromosomes, that go through crossover
+crossover_rate = 0.6 
+mutation_rate = 0.1 
+
+# Neural Network parameters
+INPUT_SIZE = 4  # 4 states (information from environment) as the inputs to the NN
 hidden_neurons = [2,2] # list of numberes of neurons in hidden layers (without bias)
 # hidden_neurons = 2 
-
-input_size = 4  # 4 states as the inputs to the NN
-Pc = 0.6  # crossover rate
-Pm = 0.1  # mutation rate
-crossed_parents = 10  # number of chromosomes that go through crossover, needs to be even

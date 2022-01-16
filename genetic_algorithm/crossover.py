@@ -14,8 +14,7 @@ def crossover(crossover_pairs):  # performs crossover on the current population
         temp2 = crossover_pairs[2*i+1][selector:]
 
         offspring[2*i][selector:] = temp2
-        a = 2*i + 1
-        offspring[a][selector:] = temp
+        offspring[2*i+1][selector:] = temp
 
     for i in range(np.size(crossover_pairs, 0)):
         offspring[i][0] = crossover_pairs[i][0]

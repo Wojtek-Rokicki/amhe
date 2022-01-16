@@ -1,36 +1,40 @@
 import genetic_algorithm.config as config
-# from genetic_algorithm import config
 import gym
 import genetic_algorithm.crossover as cross
 import genetic_algorithm.generate_population as gen_pop
 import genetic_algorithm.nn_forward as nn
 import numpy as np
 
-def main():
-    print("Hello World!")
-    print(f'generations: {config.GENERATIONS}')
-
 if __name__ == "__main__":
-    main()
-    GENERATIONS = config.GENERATIONS
-    hidden_neurons = config.hidden_neurons
-    input_size = config.input_size
-    population_size = config.population_size
-    Pc = config.Pc
-    Pm = config.Pm
-    crossed_parents = config.crossed_parents
 
+    # Genetic Algorithms parameters
+    GENERATIONS = config.GENERATIONS
+    population_size = config.population_size
+    crossed_parents = config.crossed_parents
+    Pc = config.crossover_rate
+    Pm = config.mutation_rate
+
+    # Neural Network parameters
+    input_size = config.INPUT_SIZE
+    hidden_neurons = config.hidden_neurons
+
+    # Preparing Gym Environment
     env = gym.make('CartPole-v0')
     env.seed(0)
     ob_space = env.observation_space
     obs = env.reset()  # obs holds the state variables [x xdot theta theta_dot]
     # might need to scale data so doesn't saturate the neurons, can use z-scaling or other,
     # makes sure the data has zero mean and unit variance
-    reward = 0
-    success_num = 0
-    fitness = np.zeros(population_size)
 
-    chromosome_pool, chromosome_length = gen_pop.generate_population()  # initial pool of chromosomes
+    # Initialize parameters for GA
+    chromosome_pool, chromosome_length = gen_pop.init_population()  # initial pool of chromosomes
+    # chromosome_pool is a ndarray with dimension of (population, weights)
+    # chromosome_length is redundant information ...
+    fitness = np.zeros(population_size)
+    reward = 0 # reward for each chromosome
+    success_rewards_threshold = 300
+    success_num = 0 # if reward value exceeds threshold, then it counts as success
+
 
     for generation in range(GENERATIONS):
 
@@ -64,10 +68,12 @@ if __name__ == "__main__":
 
             # might be a good thing to check if keeping the top 4 or 2 works better
 
+            # just weird way to randomly select chromosomes ...
+
             #  3. crossover
             # r = np.random.uniform(0, 1, population_size)  # create list of random numbers for crossover
 
-            indices = np.argwhere(r > Pc)
+            indices = np.argwhere(r > Pc) # it is using same randomly choosen values (same as for selection)??? not used ...
             parent_count = 0
             empty = 1
             i = 0
@@ -76,7 +82,7 @@ if __name__ == "__main__":
             while i < population_size:
                 #TODO: czy można tu jakąś lepszą metodę brania random dać?
                 r_crossover = np.random.rand(1)
-                if r_crossover < Pc:
+                if r_crossover >= Pc:
                     # include ith chromosome
                     if empty == 1:
                         crossover_pairs = selected_population[i][:]
@@ -89,7 +95,7 @@ if __name__ == "__main__":
                     if np.size(crossover_pairs, 0) == crossed_parents:
                         break  # we have enough parents for crossover
                 i = i + 1
-                if i == (population_size) and np.size(crossover_pairs, 0) < crossed_parents:
+                if i == (population_size) and np.size(crossover_pairs, 0) < crossed_parents: # TODO: Krzyzowanie dla tylko czesci osobnikow, reszta niezmieniona, wg wykladu Arabasa
                     i = 0  # we don't have enough yet, so restart the loop
                     #  generate new random number list
                     r = np.random.uniform(0, 1, population_size)  # create list of random numbers for crossover
@@ -99,7 +105,7 @@ if __name__ == "__main__":
             #  4. mutation
             # r =  np.random.uniform(0, 1, population_size*(hidden_neurons*input_size + hidden_neurons))
             print(f'Reshape: {offspring}')
-            offspring.shape = (1, population_size*(chromosome_length ))
+            offspring.shape = (1, population_size*(chromosome_length )) # tutaj blad wyskakuje ... tak, poniewaz rozmiary sie nie zgadzaly, zauwaz, ze w przykladzie rozmiar populacji jest rowny liczbie osobnikow do krzyzowania
 
             for m in range(np.size(r, 0)):
                 r_mutation = np.random.rand(1)
@@ -124,6 +130,7 @@ if __name__ == "__main__":
                 # it will only produce a PROBABILITY of moving left or right, this is a STOCHASTIC policy
                 # we will then sample from this distribution using random # [0,1]
                 act = nn.nn_forward(obs, chromosome_pool[iteration])  # current chromosome in the generation
+                # corresponds to controlling the cartpole (>=0.5 +1 force applied)
                 if act >= 0.5:
                     act = 1
                 else:
@@ -137,8 +144,9 @@ if __name__ == "__main__":
                 env.render()
 
                 next_obs, reward, done, info = env.step(act)
-                z = sum(rewards)
+                z = sum(rewards) # for what?
 
+                # TODO: Do environment configuration file, probably add some rewards threshold ...
                 done = obs[0] < -2.4 \
                        or obs[0] > 2.4 \
                        or obs[2] < -45 * 2 * 3.14159 / 360 \
@@ -156,7 +164,7 @@ if __name__ == "__main__":
                 else:
                     obs = next_obs
 
-            if sum(rewards) >= 300:
+            if sum(rewards) >= success_rewards_threshold: # maybe break for other generations if condition is met?
                 success_num += 1
                 if success_num >= 100:
                     print('Iteration: ', iteration)
