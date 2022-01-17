@@ -5,6 +5,8 @@ import genetic_algorithm.generate_population as gen_pop
 import genetic_algorithm.nn_forward as nn
 import numpy as np
 
+import genetic_algorithm as ga
+
 if __name__ == "__main__":
 
     # Genetic Algorithms parameters
@@ -42,36 +44,14 @@ if __name__ == "__main__":
         # keep the best X chromosomes from the previous generation
         if generation != 0:  # i.e. this is not the first initial population
 
-            #  1. evaluate fitness, cumulative probability
-            total_fitness = sum(fitness)
+            #  1. selection
+            # selected_population = ga.proportional_selection(chromosome_pool, fitness)
+            # selected_population = ga.threshold_selection(chromosome_pool, fitness, 1/2)
+            selected_population = ga.tournament_selection(chromosome_pool, fitness, 10)
 
-            individual_fitness = fitness / total_fitness
-            cp = np.cumsum(individual_fitness)  # cumulative probabilities
-
-            #  2. selection
-            r = np.random.uniform(0, 1, population_size)  # create list of random numbers for selection
-
-            a = np.array([0])
-            # a.shape = (1, 1)
-            cp_augmented = np.concatenate((a, cp), axis=0)
-            hist, bin_edges = np.histogram(r, cp_augmented)
-            selected_population = []
-            empty = 1
-
-            for i in range(population_size):
-                for j in range(hist[i]):
-                    if empty == 1:
-                        selected_population = chromosome_pool[i][:]
-                        empty = 0
-                    else:
-                        selected_population = np.vstack((selected_population, chromosome_pool[i][:]))
-
-            # might be a good thing to check if keeping the top 4 or 2 works better
-
-            # just weird way to randomly select chromosomes ...
-
-            #  3. crossover
-            # r = np.random.uniform(0, 1, population_size)  # create list of random numbers for crossover
+            #  2. crossover
+            # TODO: Same as with selection ...
+            r = np.random.uniform(0, 1, population_size)  # create list of random numbers for crossover
 
             indices = np.argwhere(r > Pc) # it is using same randomly choosen values (same as for selection)??? not used ...
             parent_count = 0
@@ -102,7 +82,7 @@ if __name__ == "__main__":
 
             offspring = cross.crossover(crossover_pairs)
 
-            #  4. mutation
+            #  3. mutation
             # r =  np.random.uniform(0, 1, population_size*(hidden_neurons*input_size + hidden_neurons))
             print(f'Reshape: {offspring}')
             offspring.shape = (1, population_size*(chromosome_length )) # tutaj blad wyskakuje ... tak, poniewaz rozmiary sie nie zgadzaly, zauwaz, ze w przykladzie rozmiar populacji jest rowny liczbie osobnikow do krzyzowania
