@@ -2,8 +2,8 @@
 """
 
 # Genetic Algorithm parameters
-GENERATIONS = 1000 # const
-population_size = 100 
+GENERATIONS = 4 # const
+population_size = 10 
 crossed_parents = 100 # number of chromosomes, that go through crossover
 crossover_rate = 0.6 
 mutation_rate = 0.1 

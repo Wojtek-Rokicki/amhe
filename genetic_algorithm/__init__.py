@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 # TODO: for selection types arguments check: s, theta
 def proportional_selection(p, f):
@@ -132,7 +133,7 @@ def tournament_selection(p, f, s):
 
 
 def averaging_crossover(p, cr):
-    '''Averaging crossover for Evolutionary Algorithms
+     '''Averaging crossover for Evolutionary Algorithms
     
        Parameters
        ----------
@@ -145,14 +146,34 @@ def averaging_crossover(p, cr):
        -------
        ndarray
             population after corssovers
-    '''
+     '''
 
-    # TODO: Different methods for weight picking
-    # TODO: What to do in case when drawn individuals are uneven? Maybe cr for each second individual?
-    return
+     # TODO: Different methods for weight picking
+     # TODO: What to do in case when drawn individuals are uneven? Maybe cr for each second individual?
+     population_after_crossover = []
+     for i in range(p.shape[0]):
+          r_crossover = random.random()
+          if r_crossover < cr:
+
+               #select second chromosome from the population to crossover (it's possible to choose the same chromosome)
+               crossed_id = random.randrange(0,p.shape[0])
+               #prevent from crossing chromosome with itself
+               while crossed_id == i:
+                    crossed_id = random.randrange(0,p.shape[0])
+               chromosome2 = p[crossed_id]
+               #averaging crossover
+               new_chromosome = []
+               for j in range(p.shape[1]):
+                    new_chromosome.append( (p[i][j]+chromosome2[j]) / 2)
+               
+               population_after_crossover.append(new_chromosome)
+          else:
+               population_after_crossover.append(p[i])
+     
+     return np.array([np.array(pi) for pi in population_after_crossover])
 
 def one_point_crossover(p, cr):
-    '''One point crossover for Evolutionary Algorithms
+     '''One point crossover for Evolutionary Algorithms
 
        For each individual there is a chance of one value exchange
     
@@ -167,12 +188,38 @@ def one_point_crossover(p, cr):
        -------
        ndarray
             population after corssovers
-    '''
+     '''
+     population_after_crossover = []
+     for i in range(p.shape[0]):
+          if i%2==0:
+               r_crossover = random.random()
+               if r_crossover < cr:
+                    point = random.randrange(0,p.shape[1]-1)
+                    parent1 = list(p[i])
+                    parent2 = list(p[i+1])
+                    
+                    chromosome1 = []
+                    chromosome2 = []
+                    # interchanging the genes
+                    for j in range(0,point):
+                         chromosome1.append(parent1[j])
+                         chromosome2.append(parent2[j])
 
-    return
+                    for k in range(point, p.shape[1]):
+                         chromosome1.append(parent2[k])
+                         chromosome2.append(parent1[k])
 
-def even_crossover():
-    '''Even crossover for Evolutionary Algorithms
+                    population_after_crossover.append(chromosome1)
+                    population_after_crossover.append(chromosome2)
+                    
+               else:
+                    population_after_crossover.append(p[i])
+                    population_after_crossover.append(p[i+1])
+
+     return np.array([np.array(pi) for pi in population_after_crossover])
+
+def even_crossover(p, cr):
+     '''Even crossover for Evolutionary Algorithms
 
        For each individual there is an even chance of each value exchange
     
@@ -187,6 +234,34 @@ def even_crossover():
        -------
        ndarray
             population after corssovers
-    '''
+     '''
+     population_after_crossover = []
+     for i in range(p.shape[0]):
+          if i%2==0:
+               r_crossover = random.random()
+               if r_crossover < cr:
+                    exchange_vector =  [random.randint(0,1) for _ in range(p.shape[1])]
+                    parent1 = list(p[i])
+                    parent2 = list(p[i+1])
+                    print(f'parent1: {parent1} \n parent2: {parent2}')
+                    
+                    chromosome1 = []
+                    chromosome2 = []
+                    # interchanging the genes
+                    for j in range(p.shape[1]):
+                         if exchange_vector[j]==1:
+                              chromosome1.append(parent1[j])
+                              chromosome2.append(parent2[j])
+                         else:
+                              chromosome1.append(parent2[j])
+                              chromosome2.append(parent1[j])
 
-    return
+                    print(f'chromosome1: {chromosome1} \n parent2: {chromosome2}')
+                    population_after_crossover.append(chromosome1)
+                    population_after_crossover.append(chromosome2)
+                    
+               else:
+                    population_after_crossover.append(p[i])
+                    population_after_crossover.append(p[i+1])
+
+     return np.array([np.array(pi) for pi in population_after_crossover])

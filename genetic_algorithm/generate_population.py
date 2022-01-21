@@ -18,6 +18,7 @@ def init_population():
 
     # need 10 initial chromosomes
     population = []
+    print(f'Population size: {population_size}')
     # population.shape = (hidden_neurons+1, input_size)
     for j in range(population_size):
         # initialize the weights (with biases) using Xavier initialization

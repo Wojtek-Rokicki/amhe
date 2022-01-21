@@ -4,6 +4,7 @@ import genetic_algorithm.crossover as cross
 import genetic_algorithm.generate_population as gen_pop
 import genetic_algorithm.nn_forward as nn
 import numpy as np
+import random
 
 import genetic_algorithm as ga
 
@@ -32,6 +33,7 @@ if __name__ == "__main__":
     chromosome_pool, chromosome_length = gen_pop.init_population()  # initial pool of chromosomes
     # chromosome_pool is a ndarray with dimension of (population, weights)
     # chromosome_length is redundant information ...
+    print(f'Population size: {chromosome_pool.size}')
     fitness = np.zeros(population_size)
     reward = 0 # reward for each chromosome
     success_rewards_threshold = 300
@@ -45,58 +47,27 @@ if __name__ == "__main__":
         if generation != 0:  # i.e. this is not the first initial population
 
             #  1. selection
-            # selected_population = ga.proportional_selection(chromosome_pool, fitness)
-            # selected_population = ga.threshold_selection(chromosome_pool, fitness, 1/2)
-            selected_population = ga.tournament_selection(chromosome_pool, fitness, 10)
+            selected_population = ga.proportional_selection(chromosome_pool, fitness)
+            #selected_population = ga.threshold_selection(chromosome_pool, fitness, 1/2)
+            #selected_population = ga.tournament_selection(chromosome_pool, fitness, 10)
 
             #  2. crossover
-            # TODO: Same as with selection ...
-            r = np.random.uniform(0, 1, population_size)  # create list of random numbers for crossover
+            #offspring = ga.averaging_crossover(selected_population, Pc)
+            #offspring = ga.one_point_crossover(selected_population, Pc)
+            offspring = ga.even_crossover(selected_population, Pc)
 
-            indices = np.argwhere(r > Pc) # it is using same randomly choosen values (same as for selection)??? not used ...
-            parent_count = 0
-            empty = 1
-            i = 0
-            crossover_pairs = []
-
-            while i < population_size:
-                #TODO: czy można tu jakąś lepszą metodę brania random dać?
-                r_crossover = np.random.rand(1)
-                if r_crossover >= Pc:
-                    # include ith chromosome
-                    if empty == 1:
-                        crossover_pairs = selected_population[i][:]
-                        #TODO: zastąpić to 12 długością chromosomu
-                        crossover_pairs.shape = (1, chromosome_length)
-                        empty = 0
-                    else:
-                        crossover_pairs = np.vstack((crossover_pairs, selected_population[i][:]))
-
-                    if np.size(crossover_pairs, 0) == crossed_parents:
-                        break  # we have enough parents for crossover
-                i = i + 1
-                if i == (population_size) and np.size(crossover_pairs, 0) < crossed_parents: # TODO: Krzyzowanie dla tylko czesci osobnikow, reszta niezmieniona, wg wykladu Arabasa
-                    i = 0  # we don't have enough yet, so restart the loop
-                    #  generate new random number list
-                    r = np.random.uniform(0, 1, population_size)  # create list of random numbers for crossover
-
-            offspring = cross.crossover(crossover_pairs)
-
+            #TODO: MUTATION (now it is working, but it's not the best mutation ever XD)
             #  3. mutation
-            # r =  np.random.uniform(0, 1, population_size*(hidden_neurons*input_size + hidden_neurons))
-            print(f'Reshape: {offspring}')
-            offspring.shape = (1, population_size*(chromosome_length )) # tutaj blad wyskakuje ... tak, poniewaz rozmiary sie nie zgadzaly, zauwaz, ze w przykladzie rozmiar populacji jest rowny liczbie osobnikow do krzyzowania
 
-            for m in range(np.size(r, 0)):
+            for m in range(offspring.shape[0]):
                 r_mutation = np.random.rand(1)
                 if r_mutation < Pm:
                     random_value = np.random.uniform(-1.0, 1.0, 1)
-                    offspring[0][m] += random_value
+                    c=random.randrange(0,offspring.shape[1])
+                    offspring[m][c] += random_value
 
-            #TODO: zasßapić to 2 liczbą biasów w sieci
-            offspring.shape = (population_size, chromosome_length)
+
             #  5. new mating pool finalized
-
             chromosome_pool = offspring
 
         print('Checking population results')
