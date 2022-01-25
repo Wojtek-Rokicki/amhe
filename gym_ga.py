@@ -36,11 +36,16 @@ if __name__ == "__main__":
     # chromosome_length is redundant information ...
     fitness = np.zeros(population_size)
     reward = 0 # reward for each chromosome
-    success_rewards_threshold = 300
+    success_rewards_threshold = 10
     success_num = 0 # if reward value exceeds threshold, then it counts as success
+    solution_found = False # flag value informing if solution were found
 
+    count_games = 0 # count number of played games
 
     for generation in range(GENERATIONS):
+
+        if solution_found:
+                break
 
         # update mating pool via selection, crossover, and mutation
         # keep the best X chromosomes from the previous generation
@@ -64,11 +69,13 @@ if __name__ == "__main__":
 
         print('Checking population results')
         for iteration in range(population_size):  # episode
+            if solution_found:
+                break
+            
             observations = []
             actions = []
             rewards = []
             while True:  # run each action which is much less than episode length
-
                 # function to determine correct action given observation
                 # it will only produce a PROBABILITY of moving left or right, this is a STOCHASTIC policy
                 # we will then sample from this distribution using random # [0,1]
@@ -106,14 +113,29 @@ if __name__ == "__main__":
                     break
                 else:
                     obs = next_obs
-
-            if sum(rewards) >= success_rewards_threshold: # maybe break for other generations if condition is met?
-                success_num += 1
-                if success_num >= 100:
-                    print('Iteration: ', iteration)
-                    print('Clear!!')
+                
+                # stop program if solution with success_rewards_threshold has been found
+                if sum(rewards) >= success_rewards_threshold:
+                    obs = env.reset()
+                    print('Generation: ', generation)
+                    print('Chromosome: ', iteration)
+                    print('Fitness: ', sum(rewards))
+                    reward = -1
                     fitness[iteration] = sum(rewards)
+                    solution_found = True
                     break
-            else:
-                success_num = 0
 
+            count_games +=1
+            #stop program if there are 100 chromosomes in popultaion with success_rewards_threshold fitness
+            # if sum(rewards) >= success_rewards_threshold: # maybe break for other generations if condition is met?
+            #     success_num += 1
+            #     if success_num >= 100:
+            #         print('Iteration: ', iteration)
+            #         print('Clear!!')
+            #         fitness[iteration] = sum(rewards)
+            #         solution_found = True
+            #         break
+            # else:
+            #     success_num = 0
+
+    print(f'\n Count games: {count_games} \n')
