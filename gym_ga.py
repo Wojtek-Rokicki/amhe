@@ -16,6 +16,7 @@ if __name__ == "__main__":
     crossed_parents = config.crossed_parents
     Pc = config.crossover_rate
     Pm = config.mutation_rate
+    mutation_variation = config.mutation_variation
 
     # Neural Network parameters
     input_size = config.INPUT_SIZE
@@ -33,7 +34,6 @@ if __name__ == "__main__":
     chromosome_pool, chromosome_length = gen_pop.init_population()  # initial pool of chromosomes
     # chromosome_pool is a ndarray with dimension of (population, weights)
     # chromosome_length is redundant information ...
-    print(f'Population size: {chromosome_pool.size}')
     fitness = np.zeros(population_size)
     reward = 0 # reward for each chromosome
     success_rewards_threshold = 300
@@ -56,16 +56,8 @@ if __name__ == "__main__":
             #offspring = ga.one_point_crossover(selected_population, Pc)
             offspring = ga.even_crossover(selected_population, Pc)
 
-            #TODO: MUTATION (now it is working, but it's not the best mutation ever XD)
             #  3. mutation
-
-            for m in range(offspring.shape[0]):
-                r_mutation = np.random.rand(1)
-                if r_mutation < Pm:
-                    random_value = np.random.uniform(-1.0, 1.0, 1)
-                    c=random.randrange(0,offspring.shape[1])
-                    offspring[m][c] += random_value
-
+            offspring = ga.mutation(offspring, Pm, mutation_variation)
 
             #  5. new mating pool finalized
             chromosome_pool = offspring

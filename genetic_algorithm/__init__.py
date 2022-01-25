@@ -170,7 +170,7 @@ def averaging_crossover(p, cr):
           else:
                population_after_crossover.append(p[i])
      
-     return np.array([np.array(pi) for pi in population_after_crossover])
+     return np.array([np.array(pi, dtype=object) for pi in population_after_crossover], dtype=object)
 
 def one_point_crossover(p, cr):
      '''One point crossover for Evolutionary Algorithms
@@ -216,7 +216,7 @@ def one_point_crossover(p, cr):
                     population_after_crossover.append(p[i])
                     population_after_crossover.append(p[i+1])
 
-     return np.array([np.array(pi) for pi in population_after_crossover])
+     return np.array([np.array(pi, dtype=object) for pi in population_after_crossover], dtype=object)
 
 def even_crossover(p, cr):
      '''Even crossover for Evolutionary Algorithms
@@ -243,7 +243,6 @@ def even_crossover(p, cr):
                     exchange_vector =  [random.randint(0,1) for _ in range(p.shape[1])]
                     parent1 = list(p[i])
                     parent2 = list(p[i+1])
-                    print(f'parent1: {parent1} \n parent2: {parent2}')
                     
                     chromosome1 = []
                     chromosome2 = []
@@ -256,7 +255,6 @@ def even_crossover(p, cr):
                               chromosome1.append(parent2[j])
                               chromosome2.append(parent1[j])
 
-                    print(f'chromosome1: {chromosome1} \n parent2: {chromosome2}')
                     population_after_crossover.append(chromosome1)
                     population_after_crossover.append(chromosome2)
                     
@@ -264,4 +262,38 @@ def even_crossover(p, cr):
                     population_after_crossover.append(p[i])
                     population_after_crossover.append(p[i+1])
 
-     return np.array([np.array(pi) for pi in population_after_crossover])
+     return np.array([np.array(pi, dtype=object) for pi in population_after_crossover], dtype=object)
+
+def mutation(p, cm,var):
+     '''Mutation with normal distribution N(0,var)
+
+       For each individual there is cm probability of mutation,
+       which mutate 1/3 random selected gens in chromosome with normal distribution N(0,var)
+       
+    
+       Parameters
+       ----------
+       p : ndarray
+            population of individuals
+       cr : float
+            mutation rate - probability that mutation occurs for individual
+       var : float
+            variation for normal distribution
+       
+       Returns
+       -------
+       ndarray
+            population after corssovers
+     '''
+     population_after_crossover = []
+     number_mutate_gens = int(p.shape[1]/3)
+     for m in range(p.shape[0]):
+          r_mutation = np.random.rand(1)
+          if r_mutation < cm:
+               #random_value = np.random.normal(0, var, number_mutate_gens)
+               nums = np.random.normal(0, var, p.shape[1])
+               nums = np.random.choice([1, 0], size=p.shape[1], p=[.3, .7]) * nums
+               population_after_crossover.append(p[m] + nums)
+          else:
+               population_after_crossover.append(p[m])
+     return np.array([np.array(pi, dtype=object) for pi in population_after_crossover], dtype=object)
