@@ -43,16 +43,13 @@ if __name__ == "__main__":
     # chromosome_length is redundant information ...
     fitness = np.zeros(population_size)
     reward = 0 # reward for each chromosome
-    success_rewards_threshold = 500
+    success_rewards_threshold = 1000
     success_num = 0 # if reward value exceeds threshold, then it counts as success
     solution_found = False # flag value informing if solution were found
     count_games = 0 # count number of played games
 
     #Initialize parameter for results file name
-    parameters = f"{population_size}_{Pc}_{Pm}_{mutation_variation}_{hidden_neurons}"
-    # f = open(f"program_results_{parameters}.csv", "a")
-    # f.write(f'generation,best_fitness,mean_fitness\n')
-    # f.close()
+    parameters = f"{population_size}_{Pc}_{Pm}_{mutation_variation}_{hidden_neurons}_{options.selection}_{options.crossover}"
 
     # results
     best_fitness_list = []
@@ -68,14 +65,20 @@ if __name__ == "__main__":
         if generation != 0:  # i.e. this is not the first initial population
 
             #  1. selection
-            selected_population = ga.proportional_selection(chromosome_pool, fitness)
-            #selected_population = ga.threshold_selection(chromosome_pool, fitness, 1/2)
-            #selected_population = ga.tournament_selection(chromosome_pool, fitness, 10)
+            if options.selection == 'proportional':
+                selected_population = ga.proportional_selection(chromosome_pool, fitness)
+            if options.selection == 'threshold':
+                selected_population = ga.threshold_selection(chromosome_pool, fitness, 1/2)
+            if options.selection == 'tournament':
+                selected_population = ga.tournament_selection(chromosome_pool, fitness, 10)
 
             #  2. crossover
-            #offspring = ga.averaging_crossover(selected_population, Pc)
-            #offspring = ga.one_point_crossover(selected_population, Pc)
-            offspring = ga.even_crossover(selected_population, Pc)
+            if options.crossover == 'even':
+                offspring = ga.even_crossover(selected_population, Pc)
+            if options.crossover == 'averaging':
+                offspring = ga.averaging_crossover(selected_population, Pc)
+            if options.crossover == 'one_point':
+                offspring = ga.one_point_crossover(selected_population, Pc)
 
             #  3. mutation
             offspring = ga.mutation(offspring, Pm, mutation_variation)

@@ -19,8 +19,13 @@ class AppOptionParser(OptionParser):
                         help="Mutation rate")
         self.add_option("-v", "--mutation_variation", dest="mutation_variation", default=1, type=float,
                         help="Mutation variation")
-        self.add_option("-n", "--hidden_neurons", dest="hidden_neurons", default="2,2", type=str,
+        self.add_option("-n", "--hidden_neurons", dest="hidden_neurons", default="2", type=str,
                         help="Hidden neurons")
+
+        self.add_option("-s", "--selection", dest="selection", default="proportional", type=str,
+                        help="Selection type")
+        self.add_option("-k", "--crossover", dest="crossover", default="even", type=str,
+                        help="Crossover type")
 
 
     def parse_args(self, args=None, values=None):

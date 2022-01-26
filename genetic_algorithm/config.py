@@ -2,7 +2,7 @@
 """
 
 # Genetic Algorithm parameters
-GENERATIONS = 2 # const
+GENERATIONS = 500 # const
 population_size = 10 
 crossover_rate = 0.6 
 mutation_rate = 0.1 
