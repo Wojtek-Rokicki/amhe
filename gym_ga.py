@@ -9,8 +9,10 @@ import random
 import time
 
 import genetic_algorithm as ga
+import os
 
 from option_parser import AppOptionParser
+from save_results import save_algorithm_results, save_program_results
 
 if __name__ == "__main__":
     start_time = time.time()
@@ -41,16 +43,20 @@ if __name__ == "__main__":
     # chromosome_length is redundant information ...
     fitness = np.zeros(population_size)
     reward = 0 # reward for each chromosome
-    success_rewards_threshold = 1000
+    success_rewards_threshold = 500
     success_num = 0 # if reward value exceeds threshold, then it counts as success
     solution_found = False # flag value informing if solution were found
     count_games = 0 # count number of played games
 
     #Initialize parameter for results file name
     parameters = f"{population_size}_{Pc}_{Pm}_{mutation_variation}_{hidden_neurons}"
-    f = open(f"program_results_{parameters}.csv", "a")
-    f.write(f'generation,best_fitness,mean_fitness\n')
-    f.close()
+    # f = open(f"program_results_{parameters}.csv", "a")
+    # f.write(f'generation,best_fitness,mean_fitness\n')
+    # f.close()
+
+    # results
+    best_fitness_list = []
+    mean_fitness_list= []
 
     for generation in range(GENERATIONS):
 
@@ -137,12 +143,14 @@ if __name__ == "__main__":
 
             count_games +=1
         # write generation statistic to file
-        f = open(f"program_results_{parameters}.csv", "a")
+        # f = open(f"program_results_{parameters}.csv", "a")
         best_fitness = np.amax(fitness)
         mean_fitness = np.mean(fitness)
-        print(f"Best: {best_fitness}; mean: {mean_fitness}")
-        f.write(f'{generation},{best_fitness},{mean_fitness}\n')
-        f.close()
+        best_fitness_list.append(best_fitness)
+        mean_fitness_list.append(mean_fitness)
+        # print(f"Best: {best_fitness}; mean: {mean_fitness}")
+        # f.write(f'{generation},{best_fitness},{mean_fitness}\n')
+        # f.close()
             #stop program if there are 100 chromosomes in popultaion with success_rewards_threshold fitness
             # if sum(rewards) >= success_rewards_threshold: # maybe break for other generations if condition is met?
             #     success_num += 1
@@ -158,13 +166,10 @@ if __name__ == "__main__":
 
     time = time.time() - start_time
 
-
     #print(f'\n Parameters: {parameters}')
     print(f'\n Time: {time}')
     print(f'\n Count games: {count_games} \n')
 
-    # write general statistic to file
-    f = open("algorithm_results.csv", "a")
-    #f.write(toString(count_games)+","+time+"\n")
-    f.write(f'{parameters},{count_games},{time}\n')
-    f.close()
+    #save programm results to file
+    save_algorithm_results(parameters,count_games,time)
+    save_program_results(parameters,best_fitness_listmean_fitness_list)
