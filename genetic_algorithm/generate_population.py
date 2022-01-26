@@ -4,7 +4,7 @@
 import numpy as np
 from . import config as config
 
-def init_population():
+def init_population(hidden_neurons,population_size):
     '''Generates initial population for GA using Xavier initialization
     
     Returns
@@ -12,9 +12,7 @@ def init_population():
     ndarray
         a population array with dimensions of (population, weights)
     '''
-    hidden_neurons = config.hidden_neurons
     input_size = config.INPUT_SIZE
-    population_size = config.population_size
 
     # need 10 initial chromosomes
     population = []

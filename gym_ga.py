@@ -6,21 +6,26 @@ import genetic_algorithm.nn_forward as nn
 import numpy as np
 import random
 
+import time
+
 import genetic_algorithm as ga
 
-if __name__ == "__main__":
+from option_parser import AppOptionParser
 
+if __name__ == "__main__":
+    start_time = time.time()
     # Genetic Algorithms parameters
+    parser = AppOptionParser()
+    (options, args) = parser.parse_args()
     GENERATIONS = config.GENERATIONS
-    population_size = config.population_size
-    crossed_parents = config.crossed_parents
-    Pc = config.crossover_rate
-    Pm = config.mutation_rate
-    mutation_variation = config.mutation_variation
+    population_size = options.population_size
+    Pc = options.crossover_rate
+    Pm = options.mutation_rate
+    mutation_variation = options.mutation_variation
 
     # Neural Network parameters
     input_size = config.INPUT_SIZE
-    hidden_neurons = config.hidden_neurons
+    hidden_neurons = options.hidden_neurons
 
     # Preparing Gym Environment
     env = gym.make('CartPole-v0')
@@ -31,16 +36,21 @@ if __name__ == "__main__":
     # makes sure the data has zero mean and unit variance
 
     # Initialize parameters for GA
-    chromosome_pool, chromosome_length = gen_pop.init_population()  # initial pool of chromosomes
+    chromosome_pool, chromosome_length = gen_pop.init_population(hidden_neurons,population_size)  # initial pool of chromosomes
     # chromosome_pool is a ndarray with dimension of (population, weights)
     # chromosome_length is redundant information ...
     fitness = np.zeros(population_size)
     reward = 0 # reward for each chromosome
-    success_rewards_threshold = 10
+    success_rewards_threshold = 1000
     success_num = 0 # if reward value exceeds threshold, then it counts as success
     solution_found = False # flag value informing if solution were found
-
     count_games = 0 # count number of played games
+
+    #Initialize parameter for results file name
+    parameters = f"{population_size}_{Pc}_{Pm}_{mutation_variation}_{hidden_neurons}"
+    f = open(f"program_results_{parameters}.csv", "a")
+    f.write(f'generation,best_fitness,mean_fitness\n')
+    f.close()
 
     for generation in range(GENERATIONS):
 
@@ -79,7 +89,7 @@ if __name__ == "__main__":
                 # function to determine correct action given observation
                 # it will only produce a PROBABILITY of moving left or right, this is a STOCHASTIC policy
                 # we will then sample from this distribution using random # [0,1]
-                act = nn.nn_forward(obs, chromosome_pool[iteration])  # current chromosome in the generation
+                act = nn.nn_forward(obs, chromosome_pool[iteration],hidden_neurons)  # current chromosome in the generation
                 # corresponds to controlling the cartpole (>=0.5 +1 force applied)
                 if act >= 0.5:
                     act = 1
@@ -126,6 +136,13 @@ if __name__ == "__main__":
                     break
 
             count_games +=1
+        # write generation statistic to file
+        f = open(f"program_results_{parameters}.csv", "a")
+        best_fitness = np.amax(fitness)
+        mean_fitness = np.mean(fitness)
+        print(f"Best: {best_fitness}; mean: {mean_fitness}")
+        f.write(f'{generation},{best_fitness},{mean_fitness}\n')
+        f.close()
             #stop program if there are 100 chromosomes in popultaion with success_rewards_threshold fitness
             # if sum(rewards) >= success_rewards_threshold: # maybe break for other generations if condition is met?
             #     success_num += 1
@@ -138,4 +155,16 @@ if __name__ == "__main__":
             # else:
             #     success_num = 0
 
+
+    time = time.time() - start_time
+
+
+    #print(f'\n Parameters: {parameters}')
+    print(f'\n Time: {time}')
     print(f'\n Count games: {count_games} \n')
+
+    # write general statistic to file
+    f = open("algorithm_results.csv", "a")
+    #f.write(toString(count_games)+","+time+"\n")
+    f.write(f'{parameters},{count_games},{time}\n')
+    f.close()

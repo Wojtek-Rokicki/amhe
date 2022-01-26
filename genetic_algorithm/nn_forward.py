@@ -7,7 +7,7 @@ def sigmoid(x):
     '''Sigmoid function'''
     return 1.0 / (1.0 + np.exp(-x))  # sigmoid "squashing" function to interval [0,1]
 
-def nn_forward(x, chromosome): # takes the state as input
+def nn_forward(x, chromosome,hidden_neurons): # takes the state as input
     '''Computing Neural Network output
 
        Parameters
@@ -23,8 +23,6 @@ def nn_forward(x, chromosome): # takes the state as input
             a value [0, 1]
 
     '''
-
-    hidden_neurons = config.hidden_neurons
     input_size = config.INPUT_SIZE
 
     # weigths initialization from chromosome
