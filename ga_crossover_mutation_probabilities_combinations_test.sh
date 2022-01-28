@@ -29,6 +29,9 @@ do
     echo "Loop: $i  --crossover-rate 0.5 -m 0.25  "
 	python3 gym_ga.py -s proportional -c averaging --crossover-rate 0.5 -m 0.25
 
+    echo "Loop: $i  --crossover-rate 0.5 -m 0.5  "
+    python3 gym_ga.py -s proportional -c averaging --crossover-rate 0.5 -m 0.5
+    
     echo "Loop: $i  --crossover-rate 0.5 -m 0.75  "
     python3 gym_ga.py -s proportional -c averaging --crossover-rate 0.5 -m 0.75
 
@@ -37,6 +40,4 @@ do
 
     echo "Loop: $i  --crossover-rate 0.75 -m 0.25 "
     python3 gym_ga.py -s proportional -c averaging --crossover-rate 0.75 -m 0.25
-
-
 done

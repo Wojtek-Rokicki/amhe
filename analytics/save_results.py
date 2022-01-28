@@ -13,7 +13,7 @@ def save_algorithm_results(parameters,count_games,time):
        time : float
             time od program run in seconds
     '''
-    f = open("algorithm_results.csv", "a")
+    f = open("./analytics/results/algorithm_results.csv", "a")
     f.write(f'{parameters},{count_games},{time}\n')
     f.close()
 
@@ -26,10 +26,10 @@ def save_program_results(parameters,best_fitness_list,mean_fitness_list):
              parameters of the program run
         best_fitness_list : list
              list of best fitnesses in each generation
-         mean_fitness_list : list
+        mean_fitness_list : list
              list of mean fitnesses in each generation
     '''
-    file_path = f"./results/program_results_{parameters}.csv"
+    file_path = f"./analytics/results/program_results_{parameters}.csv"
     if os.path.isfile(file_path):
         #change values in file by adding new mean and best values to existing and update runs counter
         with open(file_path, 'r') as file :

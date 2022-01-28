@@ -1,5 +1,6 @@
 import gym
 import ga
+from ga import config, generate_population, perceptron
 import numpy as np
 
 from option_parser import AppOptionParser
@@ -13,14 +14,14 @@ if __name__ == "__main__":
     parser = AppOptionParser()
     (options, args) = parser.parse_args()
 
-    GENERATIONS = ga.config.GENERATIONS
+    GENERATIONS = config.GENERATIONS
     population_size = options.population_size
     Pc = options.crossover_rate
     Pm = options.mutation_rate
     mutation_standard_deviation = options.mutation_standard_deviation
 
     # Neural Network parameters
-    input_size = ga.config.INPUT_SIZE
+    input_size = config.INPUT_SIZE
     hidden_neurons = options.hidden_neurons
 
     # Preparing Gym Environment
@@ -30,7 +31,7 @@ if __name__ == "__main__":
     obs = env.reset()  # obs holds the state variables [x xdot theta theta_dot]
 
     # Initialize parameters for GA
-    chromosome_pool, chromosome_length = ga.generate_population.init_population(hidden_neurons,population_size)  # initial pool of chromosomes
+    chromosome_pool, chromosome_length = generate_population.init_population(hidden_neurons,population_size)  # initial pool of chromosomes
     # chromosome_pool is a ndarray with dimension of (population, weights)
 
     fitness = np.zeros(population_size)
@@ -84,7 +85,7 @@ if __name__ == "__main__":
             rewards = []
             while True:  
                 # produce a PROBABILITY of moving left or right for current chromosome and observation
-                act = ga.perceptron.nn_forward(obs, chromosome_pool[iteration],hidden_neurons)
+                act = perceptron.nn_forward(obs, chromosome_pool[iteration],hidden_neurons)
                 # corresponds to controlling the cartpole (>=0.5 +1 force applied)
                 if act >= 0.5:
                     act = 1
