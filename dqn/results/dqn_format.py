@@ -1,3 +1,9 @@
+#!/bin/python3
+'''
+Script used to modify console output for dqn tests.
+It joins each 2 following lines and outputs to new file.
+'''
+
 wf = open('dqn_joined.txt', 'a')
 
 with open("dqn.csv", "r") as f:

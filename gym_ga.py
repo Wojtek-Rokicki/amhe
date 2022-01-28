@@ -1,18 +1,11 @@
-import genetic_algorithm.config as config
 import gym
-import genetic_algorithm.crossover as cross
-import genetic_algorithm.generate_population as gen_pop
-import genetic_algorithm.nn_forward as nn
+import ga
 import numpy as np
-import random
-
-import time
-
-import genetic_algorithm as ga
-import os
 
 from option_parser import AppOptionParser
-from save_results import save_algorithm_results, save_program_results
+from analytics.save_results import save_algorithm_results, save_program_results
+
+import time
 
 if __name__ == "__main__":
     start_time = time.time()
@@ -20,14 +13,14 @@ if __name__ == "__main__":
     parser = AppOptionParser()
     (options, args) = parser.parse_args()
 
-    GENERATIONS = config.GENERATIONS
+    GENERATIONS = ga.config.GENERATIONS
     population_size = options.population_size
     Pc = options.crossover_rate
     Pm = options.mutation_rate
     mutation_standard_deviation = options.mutation_standard_deviation
 
     # Neural Network parameters
-    input_size = config.INPUT_SIZE
+    input_size = ga.config.INPUT_SIZE
     hidden_neurons = options.hidden_neurons
 
     # Preparing Gym Environment
@@ -37,7 +30,7 @@ if __name__ == "__main__":
     obs = env.reset()  # obs holds the state variables [x xdot theta theta_dot]
 
     # Initialize parameters for GA
-    chromosome_pool, chromosome_length = gen_pop.init_population(hidden_neurons,population_size)  # initial pool of chromosomes
+    chromosome_pool, chromosome_length = ga.generate_population.init_population(hidden_neurons,population_size)  # initial pool of chromosomes
     # chromosome_pool is a ndarray with dimension of (population, weights)
 
     fitness = np.zeros(population_size)
@@ -91,7 +84,7 @@ if __name__ == "__main__":
             rewards = []
             while True:  
                 # produce a PROBABILITY of moving left or right for current chromosome and observation
-                act = nn.nn_forward(obs, chromosome_pool[iteration],hidden_neurons)
+                act = ga.perceptron.nn_forward(obs, chromosome_pool[iteration],hidden_neurons)
                 # corresponds to controlling the cartpole (>=0.5 +1 force applied)
                 if act >= 0.5:
                     act = 1
@@ -143,12 +136,12 @@ if __name__ == "__main__":
         mean_fitness_list.append(mean_fitness)
 
 
-    time = time.time() - start_time
+    duration_time = time.time() - start_time
 
     print(f'\n Program results')
-    print(f'\n Time: {time}')
+    print(f'\n Time: {duration_time}')
     print(f'\n Count games: {count_games} \n')
 
     #save programm results to file
-    save_algorithm_results(parameters,count_games,time)
-    save_program_results(parameters,best_fitness_list,mean_fitness_list)
+    save_algorithm_results(parameters, count_games, duration_time)
+    save_program_results(parameters, best_fitness_list, mean_fitness_list)

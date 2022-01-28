@@ -108,6 +108,6 @@ def cartpole():
 
 if __name__ == "__main__":
     games, duration_time = cartpole()
-    f = open("dqn.csv", "a")
+    f = open("results/dqn.csv", "a")
     f.write(f'{games},{duration_time}\n')
     f.close()
