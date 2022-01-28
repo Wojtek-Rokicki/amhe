@@ -27,7 +27,7 @@ def plot_algorithm_results():
     plt.title('Czas działania algorytmu dla różnej liczebności populacji')
     plt.ylabel("czas [s]")
     plt.xlabel("Liczba osobników w populacji")
-    f1.savefig('population_changing_time.png')
+    f1.savefig('./plots/population_changing_time.png')
 
     f2 = plt.figure()
     plt.subplots_adjust(bottom=0.15)
@@ -37,7 +37,7 @@ def plot_algorithm_results():
     plt.title('Liczba rozegranych gier algorytmu dla różnej liczebności populacji')
     plt.ylabel("liczba rozegranych gier")
     plt.xlabel("Liczba osobników w populacji")
-    f2.savefig('population_changing_games.png')
+    f2.savefig('./plots/population_changing_games.png')
 
     df_sel_cro = df[19:89].copy()
     df_sel_cro['params'] = df_sel_cro['params'].apply(get_population_selection_crossover)
@@ -55,7 +55,7 @@ def plot_algorithm_results():
     plt.title('Czas działania algorytmu dla różnych selekcji i krzyżowania')
     plt.ylabel("czas [s]")
     plt.xlabel("Typ selekcji i krzyżowania")
-    f3.savefig('selection_crossover_changing_times.png')
+    f3.savefig('./plots/selection_crossover_changing_times.png')
 
     f4 = plt.figure()
     plt.subplots_adjust(bottom=0.45)
@@ -66,7 +66,7 @@ def plot_algorithm_results():
     plt.title('Liczba rozegranych gier algorytmu dla różnych selekcji i krzyżowania')
     plt.ylabel("liczba rozegranych gier")
     plt.xlabel("Typ selekcji i krzyżowania")
-    f4.savefig('selection_crossover_changing_games.png')
+    f4.savefig('./plots/selection_crossover_changing_games.png')
 
 def plot_program_results():
     file = './results/program_results_10_0.5_0.5_1_[2]_proportional_one_point.csv'
@@ -84,7 +84,7 @@ def plot_program_results():
     plt.title('Najlepszy osobnik w populacji')
     plt.ylabel("wynik")
     plt.xlabel("generacja")
-    plt.savefig('try_best.png')
+    plt.savefig('./plots/try_best.png')
 
     # f2 = plt.figure()
     plt.subplots_adjust(bottom=0.45)
@@ -95,7 +95,7 @@ def plot_program_results():
     plt.title('Najlepszy osobnik w populacji')
     plt.ylabel("wynik")
     plt.xlabel("generacja")
-    plt.savefig('try_mean.png')
+    plt.savefig('./plots/try_mean.png')
 
 def plot_dqn_results():
     file = 'dqn.csv'
@@ -120,7 +120,7 @@ def plot_dqn_results():
     y2=df['average_score'].tolist()
     plt.plot(x, y2)
     plt.legend(["liczba nagród", "średnia liczba nagród"], loc ="upper left")
-    plt.savefig('dqn_analysis.png')
+    plt.savefig('./plots/dqn_analysis.png')
 
 
 if __name__ == "__main__":
