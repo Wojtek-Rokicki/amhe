@@ -264,11 +264,11 @@ def even_crossover(p, cr):
 
      return np.array([np.array(pi, dtype=object) for pi in population_after_crossover], dtype=object)
 
-def mutation(p, cm,var):
-     '''Mutation with normal distribution N(0,var)
+def mutation(p, cm,mutation_standard_deviation):
+     '''Mutation with normal distribution N(0,mutation_standard_deviation)
 
        For each individual there is cm probability of mutation,
-       which mutate 1/3 random selected gens in chromosome with normal distribution N(0,var)
+       which mutate 1/3 random selected gens in chromosome with normal distribution N(0,mutation_standard_deviation)
        
     
        Parameters
@@ -277,8 +277,8 @@ def mutation(p, cm,var):
             population of individuals
        cr : float
             mutation rate - probability that mutation occurs for individual
-       var : float
-            variation for normal distribution
+       mutation_standard_deviation : float
+            standard deviation for normal distribution
        
        Returns
        -------
@@ -290,8 +290,7 @@ def mutation(p, cm,var):
      for m in range(p.shape[0]):
           r_mutation = np.random.rand(1)
           if r_mutation < cm:
-               #random_value = np.random.normal(0, var, number_mutate_gens)
-               nums = np.random.normal(0, var, p.shape[1])
+               nums = np.random.normal(0, mutation_standard_deviation, p.shape[1])
                nums = np.random.choice([1, 0], size=p.shape[1], p=[.3, .7]) * nums
                population_after_crossover.append(p[m] + nums)
           else:

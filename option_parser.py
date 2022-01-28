@@ -17,8 +17,8 @@ class AppOptionParser(OptionParser):
                         help="Crossover rate")
         self.add_option("-m", "--mutation_rate", dest="mutation_rate", default=0.5, type=float,
                         help="Mutation rate")
-        self.add_option("-v", "--mutation_variation", dest="mutation_variation", default=1, type=float,
-                        help="Mutation variation")
+        self.add_option("-v", "--mutation_standard_deviation", dest="mutation_standard_deviation", default=1, type=float,
+                        help="Mutation standard deviation")
         self.add_option("-n", "--hidden_neurons", dest="hidden_neurons", default="2", type=str,
                         help="Hidden neurons")
 
