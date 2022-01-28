@@ -19,6 +19,7 @@ if __name__ == "__main__":
     # Genetic Algorithms parameters
     parser = AppOptionParser()
     (options, args) = parser.parse_args()
+
     GENERATIONS = config.GENERATIONS
     population_size = options.population_size
     Pc = options.crossover_rate
@@ -58,7 +59,7 @@ if __name__ == "__main__":
         if solution_found:
                 break
 
-        # update mating pool via selection, crossover, and mutation
+        # update chromosome pool via selection, crossover, and mutation
         if generation != 0: 
 
             #  1. selection
@@ -81,18 +82,16 @@ if __name__ == "__main__":
             chromosome_pool = ga.mutation(offspring, Pm, mutation_standard_deviation)
 
         print('Checking population results')
-        for iteration in range(population_size):  # episode
+        for iteration in range(population_size):  # for every chromosome in population
             if solution_found:
                 break
             
             observations = []
             actions = []
             rewards = []
-            while True:  # run each action which is much less than episode length
-                # function to determine correct action given observation
-                # it will only produce a PROBABILITY of moving left or right, this is a STOCHASTIC policy
-                # we will then sample from this distribution using random # [0,1]
-                act = nn.nn_forward(obs, chromosome_pool[iteration],hidden_neurons)  # current chromosome in the generation
+            while True:  
+                # produce a PROBABILITY of moving left or right for current chromosome and observation
+                act = nn.nn_forward(obs, chromosome_pool[iteration],hidden_neurons)
                 # corresponds to controlling the cartpole (>=0.5 +1 force applied)
                 if act >= 0.5:
                     act = 1
@@ -114,7 +113,7 @@ if __name__ == "__main__":
                        or obs[2] > 45 * 2 * 3.14159 / 360
                 done = bool(done)
 
-                if done:
+                if done: #if the game has failes
                     obs = env.reset()
                     print('Generation: ', generation)
                     print('Chromosome: ', iteration)

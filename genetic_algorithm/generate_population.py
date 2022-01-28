@@ -1,4 +1,4 @@
-"""File with GA functions
+"""File with population initialisation
 """
 
 import numpy as np
@@ -14,10 +14,7 @@ def init_population(hidden_neurons,population_size):
     '''
     input_size = config.INPUT_SIZE
 
-    # need 10 initial chromosomes
     population = []
-    print(f'Population size: {population_size}')
-    # population.shape = (hidden_neurons+1, input_size)
     for j in range(population_size):
         # initialize the weights (with biases) using Xavier initialization
 
@@ -39,16 +36,10 @@ def init_population(hidden_neurons,population_size):
         w_out.shape = (1, w_out_length)
         weights.append(w_out)
 
-        # w1_length = hidden_neurons * input_size +1
-        # w1 = np.random.randn(w1_length) / np.sqrt(input_size)
-        # w1.shape = (1, w1_length)
-        # #tutaj powinna być po prostu ostatnia warstwa
-        # w2 = np.random.randn(hidden_neurons+1) / np.sqrt(hidden_neurons+1)
-        # w2.shape = (1, hidden_neurons+1)
-
-        # a = np.concatenate((w1, w2), axis=1)
+        #make one chromosome from all weights
         a = np.concatenate(weights, axis=1)
         chromosome_length = len(a[0])
+        #add chromosome to population pool
         if j == 0:
             population = a
         else:

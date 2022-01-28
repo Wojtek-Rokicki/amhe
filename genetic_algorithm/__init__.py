@@ -1,7 +1,6 @@
 import numpy as np
 import random
 
-# TODO: for selection types arguments check: s, theta
 def proportional_selection(p, f):
     '''Proportional selection for Evolutionary Algorithms
     
@@ -108,7 +107,6 @@ def tournament_selection(p, f, s):
         r = np.random.uniform(0, 1, s) # create list of random numbers for selection
         hist, _ = np.histogram(r, cp_augmented)
 
-        # TODO: Below code can also be simplified to selecting individual for first histogram value different from 0
         tournament_individuals = []
         tournament_fitness = []
         empty_in = 1
@@ -148,8 +146,6 @@ def averaging_crossover(p, cr):
             population after corssovers
      '''
 
-     # TODO: Different methods for weight picking
-     # TODO: What to do in case when drawn individuals are uneven? Maybe cr for each second individual?
      population_after_crossover = []
      for i in range(p.shape[0]):
           r_crossover = random.random()

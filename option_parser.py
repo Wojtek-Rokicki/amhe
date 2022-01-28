@@ -9,8 +9,7 @@ def split_to_two_dim_array(value):
 class AppOptionParser(OptionParser):
     def __init__(self):
         super().__init__()
-        # self.add_option("-g", "--generations", dest="generations", default=10000, type=int,
-        #                 help="Number of generations")
+
         self.add_option("-p", "--population", dest="population_size", default=10, type=int,
                         help="Size of population")
         self.add_option("-c", "--crossover_rate", dest="crossover_rate", default=0.5, type=float,
@@ -33,6 +32,5 @@ class AppOptionParser(OptionParser):
 
         if options.hidden_neurons is not None:
             options.hidden_neurons = split_to_two_dim_array(options.hidden_neurons)
-            # print(type(options.hidden_neurons))
 
         return options, args

@@ -7,7 +7,7 @@ def sigmoid(x):
     '''Sigmoid function'''
     return 1.0 / (1.0 + np.exp(-x))  # sigmoid "squashing" function to interval [0,1]
 
-def nn_forward(x, chromosome,hidden_neurons): # takes the state as input
+def nn_forward(x, chromosome,hidden_neurons):
     '''Computing Neural Network output
 
        Parameters
@@ -29,7 +29,8 @@ def nn_forward(x, chromosome,hidden_neurons): # takes the state as input
     weights = []
     bias_weights = []
     last_length = 0
-    # TODO: make it cleaner
+
+    # get each layer weights from chromosome
     for i in range(len(hidden_neurons)):
         w_length = 0
         if i == 0:
@@ -46,33 +47,20 @@ def nn_forward(x, chromosome,hidden_neurons): # takes the state as input
         bias_array = chromosome[w_length-hidden_neurons[i]:w_length]
         bias_weights.append(bias_array)
 
-    # output layer
+    # get output layer weights
     w_out_length = hidden_neurons[-1]
     output_weigths = chromosome[last_length:]
 
     # weigths are ready to forward pass
     result = np.dot(weights[0], x)+bias_weights[0]
-    result[result < 0] = 0 # ReLU nonlinearity, could switch to smthg else later (tanh, sigmoid, etc..)
+    result[result < 0] = 0 # ReLU nonlinearity
     for i in range(len(hidden_neurons)):
         if i > 0:
             result = np.dot(weights[i], result)+bias_weights[i]
-            result[result < 0] = 0 # ReLU nonlinearity, TODO: put it to another function
+            result[result < 0] = 0 # ReLU nonlinearity
 
     # forward pass after last layer
     logp = np.dot(output_weigths, result)  # log probability
     p = sigmoid(logp) #  probability of moving right. sigmoid nonlinearity squashes output to [0,1]
 
-
-    # # condition the chromosome into matrix shape to do neural net forward pass
-    # # chromosome.shape = (hidden_neurons+1, input_size)  # + 1 to include the row of output weights from hidden layer to output
-    # w1_length = hidden_neurons * input_size
-    # w1 = chromosome[0:w1_length]
-    # w1.shape = (hidden_neurons, input_size)
-    # w2 = chromosome[w1_length+1:-1]
-
-    # #  w1 and w2 now ready to do forward pass
-    # h = np.dot(w1, x)+chromosome[w1_length]
-    # h[h < 0] = 0  # ReLU nonlinearity, could switch to smthg else later (tanh, sigmoid, etc..)
-    # logp = np.dot(w2, h) + chromosome[-1]  # log probability
-    # p = sigmoid(logp) #  probability of moving right. sigmoid nonlinearity squashes output to [0,1]
     return p
