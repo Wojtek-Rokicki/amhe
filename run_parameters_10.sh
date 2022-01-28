@@ -1,8 +1,7 @@
 #!/bin/bash
 echo "start algorithm experiments - selection and crossover combinations"
 
-runs_in_batch = 10
-for i in {1..$runs_in_batch}
+for i in $(seq 1 1 5)
 do
     echo "loop: $i  selection: proportional crossover: even"
 	python gym_ga.py -s proportional -k even

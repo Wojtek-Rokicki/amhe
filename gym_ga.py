@@ -175,4 +175,4 @@ if __name__ == "__main__":
 
     #save programm results to file
     save_algorithm_results(parameters,count_games,time)
-    save_program_results(parameters,best_fitness_listmean_fitness_list)
+    save_program_results(parameters,best_fitness_list,mean_fitness_list)

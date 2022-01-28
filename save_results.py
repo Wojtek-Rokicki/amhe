@@ -10,7 +10,7 @@ def save_algorithm_results(parameters,count_games,time):
     f.write(f'{parameters},{count_games},{time}\n')
     f.close()
 
-def save_program_results(parameters,best_fitness_listmean_fitness_list):
+def save_program_results(parameters,best_fitness_list,mean_fitness_list):
     # write generation statistic to file
     file_path = f"./results/program_results_{parameters}.csv"
     if os.path.isfile(file_path):
