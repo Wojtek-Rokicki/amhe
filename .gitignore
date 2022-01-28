@@ -1,2 +1,4 @@
+__pycache__
 miscellaneous
 *.pdf
+ql_dqn_results

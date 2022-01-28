@@ -7,10 +7,10 @@ import os
 import csv
 import numpy as np
 
-SCORES_CSV_PATH = "./scores/scores.csv"
-SCORES_PNG_PATH = "./scores/scores.png"
-SOLVED_CSV_PATH = "./scores/solved.csv"
-SOLVED_PNG_PATH = "./scores/solved.png"
+SCORES_CSV_PATH = "./dqn/scores/scores.csv"
+SCORES_PNG_PATH = "./dqn/scores/scores.png"
+SOLVED_CSV_PATH = "./dqn/scores/solved.csv"
+SOLVED_PNG_PATH = "./dqn/scores/solved.png"
 AVERAGE_SCORE_TO_SOLVE = 195
 CONSECUTIVE_RUNS_TO_SOLVE = 100
 

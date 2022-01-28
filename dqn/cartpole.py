@@ -8,6 +8,9 @@ from tensorflow.keras.optimizers import Adam
 
 from scores.score_logger import ScoreLogger
 
+import time
+import os
+
 ENV_NAME = "CartPole-v1"
 
 GAMMA = 0.95
@@ -66,7 +69,12 @@ def cartpole():
     action_space = env.action_space.n
     dqn_solver = DQNSolver(observation_space, action_space)
     run = 0
-    while True:
+    rewards_threshold = 500
+    iterations_no = 1000
+    solution_found = False
+    start_time = time.time()
+    stop_time = -1
+    while iterations_no > run:
         run += 1
         state = env.reset()
         state = np.reshape(state, [1, observation_space])
@@ -86,6 +94,20 @@ def cartpole():
                 break
             dqn_solver.experience_replay()
 
+            if step >= rewards_threshold:
+                stop_time =  time.time()
+                solution_found = True
+                break
+        if solution_found:
+            break
+    
+    return run, stop_time - start_time
+
+        
+
 
 if __name__ == "__main__":
-    cartpole()
+    games, duration_time = cartpole()
+    f = open("dqn.csv", "a")
+    f.write(f'{games},{duration_time}\n')
+    f.close()
