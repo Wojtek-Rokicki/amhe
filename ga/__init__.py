@@ -1,3 +1,4 @@
+"""File with selection, crossover and mutation methods"""
 import numpy as np
 import random
 

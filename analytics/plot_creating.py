@@ -1,3 +1,4 @@
+"""File with plots creating methods"""
 import matplotlib.pyplot as plt
 import pandas as pd
 

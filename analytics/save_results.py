@@ -1,16 +1,33 @@
+"""File with saving results to file functions"""
 import os
 
 def save_algorithm_results(parameters,count_games,time):
-    '''
-        Save general informations about program run to file
+    '''Save general informations about program run to file
+        
+       Parameters
+       ----------
+       parameters : string
+            parameters of the program run
+       count_games : int
+            number of played games in program run
+       time : float
+            time od program run in seconds
     '''
     f = open("algorithm_results.csv", "a")
     f.write(f'{parameters},{count_games},{time}\n')
     f.close()
 
 def save_program_results(parameters,best_fitness_list,mean_fitness_list):
-    '''
-        Save generation statistic about program run to file
+    '''Save generation statistic about program run to file
+        
+        Parameters
+        ----------
+        parameters : string
+             parameters of the program run
+        best_fitness_list : list
+             list of best fitnesses in each generation
+         mean_fitness_list : list
+             list of mean fitnesses in each generation
     '''
     file_path = f"./results/program_results_{parameters}.csv"
     if os.path.isfile(file_path):

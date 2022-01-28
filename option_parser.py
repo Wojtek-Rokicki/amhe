@@ -1,5 +1,5 @@
+"""File with program arguments parsing methods"""
 from optparse import OptionParser
-
 
 def split_to_two_dim_array(value):
     string_list = list(value.split(","))
