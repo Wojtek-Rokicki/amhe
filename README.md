@@ -6,6 +6,7 @@ Heuristic - Genetic Algorithm teaching NN to solve Openai Environement problem
 - [Selection and crossover methods combinations](ga_selections_crossovers_combinations_test.sh)
 - [Crossover and mutation probabilities combinations](ga_crossover_mutation_probabilities_combinations_test.sh)
 - [Population size](ga_population_size_test.sh)
+- [Neural Network size](ga_neaural_network_size_test.sh)
 ### Algorithms comparison
 - [Genetic Algorithm, DQN, QLearning](algorithms_comparison.sh)
 

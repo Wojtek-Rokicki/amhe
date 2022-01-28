@@ -6,12 +6,12 @@ do
 	for p in $(seq 10 10 90)
 	do
 		echo "loop $j POPULATION SIZE: $p"
-		python gym_ga.py -p $p -c 0.75 -m 0.75 -n 2 -s proportional -k averaging
+		python gym_ga.py -p $p --crossover-rate 0.75 -m 0.75 -n 2 -s proportional -c averaging
 	done
 
 	for p in $(seq 100 100 1000)
 	do
 		echo "loop $j POPULATION SIZE: $p"
-		python gym_ga.py -p $p -c 0.75 -m 0.75 -n 2 -s proportional -k averaging
+		python gym_ga.py -p $p --crossover-rate 0.75 -m 0.75 -n 2 -s proportional -c averaging
 	done
 done

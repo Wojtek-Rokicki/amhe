@@ -1,47 +1,31 @@
-"""File with plots creating methods"""
+''' Rile with functions making plots
+'''
 import matplotlib.pyplot as plt
 import pandas as pd
 
 def get_population_size(name):
     string_list = list(name.split("_"))
-    return string_list[0]
+    return int(string_list[0])
 
 def get_population_selection_crossover(name):
     string_list = list(name.split("_"))
     return string_list[5]+"_"+string_list[6]
 
-def plot_algorithm_results():
-    file = 'algorithm_results_copy.csv'
+def get_crossover_mutation_rate(name):
+    string_list = list(name.split("_"))
+    return string_list[1]+"_"+string_list[2]
 
-    df = pd.read_csv (file,usecols= ['params','games','time'])
+def get_network_param(name):
+    string_list = list(name.split("_"))
+    print(string_list)
+    return string_list[4]
 
-    #get first rows with information about algorithm run
-    df_pop = df.head(18).copy()
-    df_pop['params'] = df_pop['params'].apply(get_population_size)
-    x= df_pop['params'].tolist()
-    y=df_pop['time'].tolist()
+def plot_algorithm_results(start_row, end_row, file_name, save_file_name,function_params, x_axis_label,title):
 
-    f1 = plt.figure()
-    plt.subplots_adjust(bottom=0.15)
-    plt.scatter(x, y)
-    plt.xticks(rotation=45)
-    plt.title('Czas działania algorytmu dla różnej liczebności populacji')
-    plt.ylabel("czas [s]")
-    plt.xlabel("Liczba osobników w populacji")
-    f1.savefig('./plots/population_changing_time.png')
+    df = pd.read_csv (file_name,usecols= ['params','games','time'])
 
-    f2 = plt.figure()
-    plt.subplots_adjust(bottom=0.15)
-    y=df_pop['games'].tolist()
-    plt.scatter(x, y)
-    plt.xticks(rotation=45)
-    plt.title('Liczba rozegranych gier algorytmu dla różnej liczebności populacji')
-    plt.ylabel("liczba rozegranych gier")
-    plt.xlabel("Liczba osobników w populacji")
-    f2.savefig('./plots/population_changing_games.png')
-
-    df_sel_cro = df[19:89].copy()
-    df_sel_cro['params'] = df_sel_cro['params'].apply(get_population_selection_crossover)
+    df_sel_cro = df[start_row:end_row].copy()
+    df_sel_cro['params'] = df_sel_cro['params'].apply(function_params)
     df_sel_cro_time = df_sel_cro.groupby('params', as_index=False)['time'].mean()
     print(df_sel_cro_time)
     df_sel_cro_games = df_sel_cro.groupby('params', as_index=False)['games'].mean()
@@ -53,10 +37,10 @@ def plot_algorithm_results():
     y=df_sel_cro_time['time'].tolist()
     plt.scatter(x, y)
     plt.xticks(rotation=90)
-    plt.title('Czas działania algorytmu dla różnych selekcji i krzyżowania')
+    plt.title(f'Czas działania algorytmu dla {title}')
     plt.ylabel("czas [s]")
-    plt.xlabel("Typ selekcji i krzyżowania")
-    f3.savefig('./plots/selection_crossover_changing_times.png')
+    plt.xlabel(x_axis_label)
+    f3.savefig(f'./plots/{save_file_name}_times.png')
 
     f4 = plt.figure()
     plt.subplots_adjust(bottom=0.45)
@@ -64,19 +48,18 @@ def plot_algorithm_results():
     y=df_sel_cro_games['games'].tolist()
     plt.scatter(x, y)
     plt.xticks(rotation=90)
-    plt.title('Liczba rozegranych gier algorytmu dla różnych selekcji i krzyżowania')
+    plt.title(f'Liczba rozegranych gier algorytmu dla {title}')
     plt.ylabel("liczba rozegranych gier")
-    plt.xlabel("Typ selekcji i krzyżowania")
-    f4.savefig('./plots/selection_crossover_changing_games.png')
+    plt.xlabel(x_axis_label)
+    f4.savefig(f'./plots/{save_file_name}_games.png')
 
-def plot_program_results():
+def plot_program_results(file):
     file = './results/program_results_10_0.5_0.5_1_[2]_proportional_one_point.csv'
     df = pd.read_csv (file,usecols= ['generation','best_fitness','mean_fitness','number'])
     df['average_best'] = df['best_fitness']/df[ 'number']
     df['average_mean'] = df['mean_fitness']/df[ 'number']
     print(df)
 
-    # f1 = plt.figure()
     plt.subplots_adjust(bottom=0.45)
     x= df['generation'].tolist()
     y=df['average_best'].tolist()
@@ -85,9 +68,8 @@ def plot_program_results():
     plt.title('Najlepszy osobnik w populacji')
     plt.ylabel("wynik")
     plt.xlabel("generacja")
-    plt.savefig('./plots/try_best.png')
+    plt.savefig('./plots//try_best.png')
 
-    # f2 = plt.figure()
     plt.subplots_adjust(bottom=0.45)
     x= df['generation'].tolist()
     y=df['average_mean'].tolist()
@@ -101,11 +83,7 @@ def plot_program_results():
 def plot_dqn_results():
     file = 'dqn.csv'
     df = pd.read_csv (file,usecols= ['game_no','exploration_rate','score','min_score','average_score','max_score'])
-    # df['average_best'] = df['best_fitness']/df[ 'number']
-    # df['average_mean'] = df['mean_fitness']/df[ 'number']
-    # print(df)
 
-    # f1 = plt.figure()
     plt.subplots_adjust(bottom=0.45)
     x= df['game_no'].tolist()
     y1=df['score'].tolist()
@@ -114,9 +92,7 @@ def plot_dqn_results():
     plt.title('Kolejne symulacje algorytmu DQN')
     plt.ylabel("wynik")
     plt.xlabel("generacja")
-    # plt.savefig('try_best.png')
 
-    # f2 = plt.figure()
     plt.subplots_adjust(bottom=0.45)
     y2=df['average_score'].tolist()
     plt.plot(x, y2)
@@ -125,6 +101,11 @@ def plot_dqn_results():
 
 
 if __name__ == "__main__":
-    # plot_algorithm_results()
-    # plot_program_results()
+    plot_algorithm_results()
+    # plot_algorithm_results(1,18,'./results/algorithm_results_copy', 'population_changing', get_population_size, 'Liczba osobników w populacji', 'różnej liczebności populacji')
+    # plot_algorithm_results(19,89,'./results/algorithm_results_copy', 'selection_crossover_changing', get_population_selection_crossover, 'Typ selekcji i krzyżowania', 'różnych selekcji i krzyżowania')
     plot_dqn_results()
+    plot_algorithm_results(1, 42, './results/parameters_experiments_results.csv', 'parameters_experiments_results',get_crossover_mutation_rate,'prawdopodobieństwo krzyżowania i mutacji','różnych ustawień parametrów')
+    plot_algorithm_results(1, 50, './results/population_size_experiments_10-100.csv', 'population_size_experiments_10-100_results',get_population_size,'rozmiar populacji','różnych rozmiarów populacji')
+    plot_algorithm_results(1, 50, './results/population_size_experiments_100-1000.csv', 'population_size_experiments_100-1000_results',get_population_size,'rozmiar populacji','różnych rozmiarów populacji')
+    plot_algorithm_results(1, 60, './results/network_experiments.csv', 'network_experiments_results',get_network_param,'liczby neuronów w warstwach uruchamianej sieci','różnych sieci neuronowych')
